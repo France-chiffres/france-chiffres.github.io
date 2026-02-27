@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>France Chiffres - Portail Statistique</title>
     
-    <!-- Utilisation de Tailwind CSS pour un design professionnel et rapide -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Ajout de FontAwesome pour avoir des icônes facilement -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Police de caractères professionnelle (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Polices de caractères : Playfair Display (Institutionnel) & Inter (Moderne/Lisible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -20,107 +22,205 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        // Couleurs officielles du drapeau français
-                        'fr-blue': '#0055A4',
-                        'fr-red': '#EF4135',
+                        // Couleurs inspirées de la charte de l'État (Marianne)
+                        'fr-blue': '#000091',
+                        'fr-red': '#E1000F',
+                        'fr-bg': '#F8F9FA',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'blob': 'blob 10s infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Petite animation au survol des cartes */
-        .card-hover {
-            transition: all 0.3s ease;
+        /* Styles personnalisés pour parfaire l'UI */
+        body {
+            background-color: #F8F9FA;
+            /* Motif très subtil en fond */
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 40px 40px;
         }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
+
+        .stat-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 145, 0.08), 0 10px 20px -5px rgba(0, 0, 145, 0.04);
+        }
+
+        .icon-wrapper {
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover .icon-wrapper {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .arrow-icon {
+            transform: translateX(6px);
+        }
+
+        /* Animation d'entrée en cascade */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col font-sans">
+<body class="text-gray-800 min-h-screen flex flex-col font-sans relative overflow-x-hidden">
 
-    <!-- EN-TÊTE (HEADER) -->
-    <header class="bg-white border-b-4 border-fr-blue shadow-sm">
+    <!-- Éléments de fond décoratifs (Blobs) -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+        <div class="absolute top-[10%] right-[-5%] w-96 h-96 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- EN-TÊTE (HEADER) STICKY -->
+    <header class="glass-header sticky top-0 z-50 border-b border-gray-200/50">
+        <!-- Liseré tricolore discret en haut -->
+        <div class="h-1 w-full flex">
+            <div class="w-1/3 bg-fr-blue"></div>
+            <div class="w-1/3 bg-white"></div>
+            <div class="w-1/3 bg-fr-red"></div>
+        </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-6">
+            <div class="flex justify-between items-center py-5">
                 <!-- Logo et Titre -->
-                <div class="flex items-center space-x-4">
-                    <!-- Logo Drapeau Français stylisé en 3 barres -->
-                    <div class="flex h-10 w-12 rounded overflow-hidden shadow-sm border border-gray-200">
+                <a href="#" class="flex items-center space-x-4 group">
+                    <!-- Logo moderne -->
+                    <div class="relative flex h-10 w-10 rounded-xl overflow-hidden shadow-sm border border-gray-100 transform group-hover:scale-105 transition-transform duration-300">
                         <div class="w-1/3 bg-fr-blue h-full"></div>
                         <div class="w-1/3 bg-white h-full"></div>
                         <div class="w-1/3 bg-fr-red h-full"></div>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">France<span class="text-fr-blue">Chiffres</span></h1>
-                        <p class="text-sm text-gray-500 font-medium">L'essentiel des données statistiques</p>
+                        <h1 class="text-2xl font-bold text-gray-900 tracking-tight font-serif">
+                            France<span class="text-fr-blue">Chiffres</span>
+                        </h1>
                     </div>
-                </div>
+                </a>
+                
+                <!-- Navigation secondaire (optionnelle) -->
+                <nav class="hidden md:flex space-x-8">
+                    <span class="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+                        <i class="fa-solid fa-circle-check text-green-500 mr-1"></i> Données sourcées
+                    </span>
+                </nav>
             </div>
         </div>
     </header>
 
     <!-- SECTION PRINCIPALE (HERO) -->
-    <main class="flex-grow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main class="flex-grow flex flex-col items-center justify-center pt-16 pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Portail des Statistiques Nationales</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Retrouvez ici l'agrégation claire et précise des données socio-économiques françaises. 
-                    Sélectionnez une thématique ci-dessous pour explorer les chiffres en détail.
+            <div class="text-center mb-20 opacity-0 animate-fade-in-up">
+                <div class="inline-flex items-center justify-center px-4 py-1.5 mb-6 text-sm font-semibold text-fr-blue bg-blue-50 border border-blue-100 rounded-full shadow-sm">
+                    <i class="fa-solid fa-chart-pie mr-2"></i> Portail d'agrégation 2026
+                </div>
+                <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 font-serif leading-tight">
+                    La France en <br class="md:hidden">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-fr-blue to-fr-red">
+                        Données Claires.
+                    </span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
+                    Explorez l'évolution socio-économique du pays à travers des indicateurs précis, mis à jour et sourcés. Sélectionnez une thématique pour commencer.
                 </p>
             </div>
 
             <!-- ========================================================================= -->
             <!-- ZONE DES CARTES (MODULAIRE) : AJOUTEZ VOS NOUVELLES PAGES ICI -->
             <!-- ========================================================================= -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
 
                 <!-- CARTE 1 : LE SMIC -->
-                <!-- Notez le lien href="smic/" qui pointe vers votre sous-dossier -->
-                <a href="smic/" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group">
-                    <div class="w-12 h-12 rounded-lg bg-blue-50 text-fr-blue flex items-center justify-center text-xl mb-4 group-hover:bg-fr-blue group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-euro-sign"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-fr-blue transition-colors">Le SMIC</h3>
-                    <p class="text-gray-600 mb-4 line-clamp-2">
-                        Évolution historique, montants nets et bruts du Salaire Minimum Interprofessionnel de Croissance.
-                    </p>
-                    <div class="text-sm font-semibold text-fr-blue flex items-center">
-                        Consulter les données <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-                    </div>
-                </a>
-
-                <!-- CARTE 2 : L'INFLATION (Exemple pour une future page) -->
-                <a href="inflation/" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group">
-                    <div class="w-12 h-12 rounded-lg bg-red-50 text-fr-red flex items-center justify-center text-xl mb-4 group-hover:bg-fr-red group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-fr-red transition-colors">L'Inflation</h3>
-                    <p class="text-gray-600 mb-4 line-clamp-2">
-                        Indice des prix à la consommation (IPC) et évolution du pouvoir d'achat des ménages.
-                    </p>
-                    <div class="text-sm font-semibold text-fr-red flex items-center">
-                        Consulter les données <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                <a href="smic/" class="stat-card group relative bg-white rounded-3xl p-8 border border-gray-100 overflow-hidden opacity-0 animate-fade-in-up delay-100 block">
+                    <!-- Décoration de fond de carte -->
+                    <div class="absolute -right-12 -top-12 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="icon-wrapper w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 text-fr-blue flex items-center justify-center text-2xl mb-6 shadow-sm border border-blue-100/50">
+                            <i class="fa-solid fa-euro-sign"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 font-serif group-hover:text-fr-blue transition-colors">Le SMIC</h3>
+                        <p class="text-gray-500 mb-8 leading-relaxed font-light">
+                            Évolution historique, montants nets et bruts du Salaire Minimum Interprofessionnel de Croissance au fil des années.
+                        </p>
+                        <div class="flex items-center text-sm font-semibold text-fr-blue mt-auto">
+                            <span>Explorer ce sujet</span>
+                            <i class="fa-solid fa-arrow-right ml-2 arrow-icon"></i>
+                        </div>
                     </div>
                 </a>
 
-                <!-- CARTE 3 : LE CHÔMAGE (Exemple pour une future page) -->
-                <a href="chomage/" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group">
-                    <div class="w-12 h-12 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center text-xl mb-4 group-hover:bg-gray-700 group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-users"></i>
+                <!-- CARTE 2 : L'INFLATION -->
+                <a href="inflation/" class="stat-card group relative bg-white rounded-3xl p-8 border border-gray-100 overflow-hidden opacity-0 animate-fade-in-up delay-200 block">
+                    <!-- Décoration de fond de carte -->
+                    <div class="absolute -right-12 -top-12 w-32 h-32 bg-red-50 rounded-full opacity-50 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="icon-wrapper w-14 h-14 rounded-2xl bg-gradient-to-br from-red-50 to-red-100 text-fr-red flex items-center justify-center text-2xl mb-6 shadow-sm border border-red-100/50">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 font-serif group-hover:text-fr-red transition-colors">L'Inflation</h3>
+                        <p class="text-gray-500 mb-8 leading-relaxed font-light">
+                            Indice des prix à la consommation (IPC) et évolution du pouvoir d'achat des ménages face au coût de la vie.
+                        </p>
+                        <div class="flex items-center text-sm font-semibold text-fr-red mt-auto">
+                            <span>Explorer ce sujet</span>
+                            <i class="fa-solid fa-arrow-right ml-2 arrow-icon"></i>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">Le Chômage</h3>
-                    <p class="text-gray-600 mb-4 line-clamp-2">
-                        Taux de chômage au sens du BIT, demandeurs d'emploi inscrits et évolution du marché du travail.
-                    </p>
-                    <div class="text-sm font-semibold text-gray-700 flex items-center">
-                        Consulter les données <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </a>
+
+                <!-- CARTE 3 : LE CHÔMAGE -->
+                <a href="chomage/" class="stat-card group relative bg-white rounded-3xl p-8 border border-gray-100 overflow-hidden opacity-0 animate-fade-in-up delay-300 block">
+                    <!-- Décoration de fond de carte -->
+                    <div class="absolute -right-12 -top-12 w-32 h-32 bg-gray-50 rounded-full opacity-80 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="icon-wrapper w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-200 text-gray-700 flex items-center justify-center text-2xl mb-6 shadow-sm border border-gray-200/50">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3 font-serif group-hover:text-gray-700 transition-colors">Le Chômage</h3>
+                        <p class="text-gray-500 mb-8 leading-relaxed font-light">
+                            Taux de chômage au sens du BIT, catégories de demandeurs d'emploi et statistiques du marché du travail.
+                        </p>
+                        <div class="flex items-center text-sm font-semibold text-gray-700 mt-auto">
+                            <span>Explorer ce sujet</span>
+                            <i class="fa-solid fa-arrow-right ml-2 arrow-icon"></i>
+                        </div>
                     </div>
                 </a>
 
@@ -133,19 +233,28 @@
     </main>
 
     <!-- PIED DE PAGE (FOOTER) -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="md:flex md:items-center md:justify-between">
-                <div class="flex justify-center md:justify-start mb-6 md:mb-0 space-x-6 md:order-2">
-                    <a href="https://github.com/france-chiffres" target="_blank" class="text-gray-400 hover:text-gray-500">
-                        <span class="sr-only">GitHub</span>
-                        <i class="fa-brands fa-github text-xl"></i>
-                    </a>
+    <footer class="bg-white border-t border-gray-200/60 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                
+                <div class="flex items-center mb-6 md:mb-0">
+                    <div class="flex h-6 w-8 rounded-sm overflow-hidden mr-3">
+                        <div class="w-1/3 bg-fr-blue h-full"></div>
+                        <div class="w-1/3 bg-gray-100 h-full"></div>
+                        <div class="w-1/3 bg-fr-red h-full"></div>
+                    </div>
+                    <span class="text-sm font-serif font-bold text-gray-800">France Chiffres</span>
                 </div>
-                <div class="mt-8 md:mt-0 md:order-1">
-                    <p class="text-center md:text-left text-sm text-gray-500">
-                        &copy; 2026 France Chiffres. Projet open-source hébergé sur GitHub Pages. Les données présentées sont à but informatif.
-                    </p>
+
+                <p class="text-center text-sm text-gray-500 font-light mb-6 md:mb-0">
+                    &copy; 2026 Projet open-source. Hébergé via GitHub Pages.
+                </p>
+
+                <div class="flex space-x-6">
+                    <a href="https://github.com/france-chiffres" target="_blank" class="text-gray-400 hover:text-gray-900 transition-colors">
+                        <span class="sr-only">GitHub</span>
+                        <i class="fa-brands fa-github text-2xl"></i>
+                    </a>
                 </div>
             </div>
         </div>
